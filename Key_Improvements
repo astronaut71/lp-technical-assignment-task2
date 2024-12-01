@@ -1,0 +1,18 @@
+Key Improvements
+
+    Clear Register Access Rules:
+        Access to REG_ADDR_A and REG_ADDR_B follows specified rules (e.g., read-before-write for A and clear-before-write for B).
+
+    Type Safety and Volatile Usage:
+        Registers are accessed through volatile uint8_t * to prevent compiler optimizations and ensure correct memory-mapped IO behavior.
+
+    Improved Readability:
+        Bit masks are clearly defined, making the purpose of operations obvious.
+
+    Encapsulation of Rules:
+        Helper functions encapsulate specific register access rules, reducing redundancy and the likelihood of errors.
+
+    Atomicity Preparation:
+        Atomic access can be ensured in future by wrapping critical sections with interrupt disabling/enabling if required.
+
+By implementing these changes, the code becomes safer, more robust, and easier to understand and maintain.
