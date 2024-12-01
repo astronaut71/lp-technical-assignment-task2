@@ -1,0 +1,37 @@
+
+#include <stdint.h>
+
+// Register Addresses
+#define REG_ADDR_A ((volatile uint8_t *)0x8000) // 8-bit register for peripheral control
+#define REG_ADDR_B ((volatile uint8_t *)0x9000) // 8-bit register for another peripheral control
+
+// Bit Masks
+#define REG_A_BIT3 (1U << 3) // Bit 3 mask for REG_ADDR_A
+#define REG_A_BIT0 (1U << 0) // Bit 0 mask for REG_ADDR_A
+#define REG_B_BIT1 (1U << 1) // Bit 1 mask for REG_ADDR_B
+
+// Helper Functions
+static inline void write_to_reg_a(uint8_t value) {
+    volatile uint8_t temp = *REG_ADDR_A; // Read-before-write requirement
+    *REG_ADDR_A = temp | value;
+}
+
+static inline void clear_and_write_to_reg_b(uint8_t value) {
+    *REG_ADDR_B = 0x00; // Clear all bits
+    *REG_ADDR_B = value; // Write the new value
+}
+
+// Interrupt Handlers
+void interrupt_job_a(void) {
+    write_to_reg_a(REG_A_BIT3); // Set Bit 3
+}
+
+void interrupt_job_b(void) {
+    volatile uint8_t temp = *REG_ADDR_A; // Read-before-write
+    *REG_ADDR_A = temp & ~REG_A_BIT0;   // Clear Bit 0
+}
+
+void interrupt_job_c(void) {
+    clear_and_write_to_reg_b(REG_B_BIT1); // Clear all bits, then set Bit 1
+}
+
